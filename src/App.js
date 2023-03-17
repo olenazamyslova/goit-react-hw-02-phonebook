@@ -20,58 +20,60 @@ class App extends Component {
     this.repeatControl(data);
   };
 
-  repeatControl = data => {
-    let nameArray = [];
-    nameArray = this.state.contacts.map(cur => cur.name);
-    if (!nameArray.includes(data.name)) {
-      let arrayCont = [];
-      arrayCont = [
-        ...this.state.contacts,
-        { id: uuidv4(), name: data.name, number: data.number },
-      ];
-      return this.setState({ ...this.state, contacts: arrayCont });
-    } else {
-      alert(' Контакт вже є у телефонній книзі!!!');
-    }
-  };
+  repeatControl = (data) => {
+  const { contacts } = this.state;
+  const nameArray = contacts.map((contact) => contact.name);
+
+  if (!nameArray.includes(data.name)) {
+    const newContact = {
+      id: uuidv4(),
+      name: data.name,
+      number: data.number,
+    };
+
+    this.setState((prevState) => ({
+      ...prevState,
+      contacts: [...prevState.contacts, newContact],
+    }));
+  } else {
+    alert("Контакт вже є у телефонній книзі!!!");
+  }
+};
 
   elementDelete = (arr, idContact) => {
     let newArr = arr.filter(elem => elem.id !== idContact);
     return newArr;
   };
 
-  deleteContactFromContactList = idContact => {
-    let newArrAfterDel = this.elementDelete(this.state.contacts, idContact);
-    this.setState({
-      ...this.state,
-      contacts: [...newArrAfterDel],
-    });
-  };
+  deleteContactFromContactList = (idContact) => {
+  this.setState((prevState) => {
+    const updatedContacts = this.elementDelete(prevState.contacts, idContact);
+    return { contacts: updatedContacts };
+  });
+};
 
   setFilterToState = filterData => {
-    this.setState({ ...this.state, filter: `${filterData}` });
+    this.setState({ filter: `${filterData}` });
   };
 
-  filterArr = fArr => {
-    let newArr = fArr.filter(cur =>
-      cur.name.toUpperCase().includes(this.state.filter),
-    );
-    return newArr;
-  };
+  filterArr = () => {
+  return this.state.contacts.filter((cur) =>
+    cur.name.toUpperCase().includes(this.state.filter)
+  );
+};
 
-  render() {
-    return (
-      <div className="App">
-        <h1>Phonebook</h1>
-        <ContactForm onSubmitData={this.formSubmitHandler} />
-        <h1>Contacts</h1>
-        <Filter setFilterToState={this.setFilterToState} />
-        <ContactList
-          contacts={this.filterArr(this.state.contacts)}
-          del={this.deleteContactFromContactList}
-        />
-      </div>
-    );
-  }
+render() {
+  const filteredContacts = this.filterArr();
+
+  return (
+    <div className="App">
+      <h1>Phonebook</h1>
+      <ContactForm onSubmitData={this.formSubmitHandler} />
+      <h1>Contacts</h1>
+      <Filter setFilterToState={this.setFilterToState} />
+      <ContactList contacts={filteredContacts} del={this.deleteContactFromContactList} />
+    </div>
+  );
+}
 }
 export default App;

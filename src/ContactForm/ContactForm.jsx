@@ -8,24 +8,14 @@ class ContactForm extends Component {
     number: '',
   };
   handleChange = event => {
-    /*     console.log(event.currentTarget);
-    console.log(event.currentTarget.name);
-    console.log(event.currentTarget.value); */
     const { name, value } = event.currentTarget;
     this.setState({ [name]: value });
-    //this.setState({ [event.currentTarget.name]: event.currentTarget.value });
   };
-  /*   inputNameEvent = event => {
-    this.setState({ curName: event.currentTarget.value });
-  };
-  inputTelEvent = event => {
-    this.setState({ curTel: event.currentTarget.value });
-  }; */
+
 
   handleSubmit = event => {
     event.preventDefault();
     let contactForAdd = { name: this.state.name, number: this.state.number };
-    //console.log(this.state);
     this.props.onSubmitData(contactForAdd);
 
     this.reset();
